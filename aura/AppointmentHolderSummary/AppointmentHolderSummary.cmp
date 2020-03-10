@@ -1,0 +1,21 @@
+<!--
+ - Created by andrewlokotosh on 4/5/18.
+ -->
+
+<aura:component description="AppointmentHolderSummary">
+    <aura:attribute name="appointmentsCount" type="Integer" access="public"/>
+    <aura:attribute name="durationHours" type="Integer" access="public"/>
+
+    <aura:attribute name="appointmentHolderId" type="String" access="public"/>
+    <aura:attribute name="eventsByAppointmentHolder" type="Object" access="public"/>
+
+    <aura:attribute name="events" type="Set" access="public"/>
+    <aura:attribute name="duration" type="String" access="public"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <dl>
+        <dt>{!v.durationHours} hours</dt>
+        <dt>{!v.appointmentsCount} appointments</dt>
+    </dl>
+
+</aura:component>

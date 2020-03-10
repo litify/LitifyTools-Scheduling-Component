@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Litify Scheduling Component</fullName>
+    <types>
+        <members>L_SchedulingTableController</members>
+        <members>L_SchedulingTableControllerTest</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>AppointmentHolderSummary</members>
+        <members>ScheduleApptRedirect</members>
+        <members>SchedulingApp</members>
+        <members>SchedulingTable</members>
+        <name>AuraDefinitionBundle</name>
+    </types>
+    <types>
+        <members>Appointment_Holder__c.Active__c</members>
+        <members>Appointment_Holder__c.User__c</members>
+        <members>Availability__c.Appointment_Holder__c</members>
+        <members>Availability__c.Appointment_Types__c</members>
+        <members>Availability__c.Days_of_the_Week__c</members>
+        <members>Availability__c.End_Date__c</members>
+        <members>Availability__c.End_Time__c</members>
+        <members>Availability__c.Location_Zones__c</members>
+        <members>Availability__c.Start_Date__c</members>
+        <members>Availability__c.Start_Time__c</members>
+        <members>Scheduling_Time__c.End_Time__c</members>
+        <members>Scheduling_Time__c.Order__c</members>
+        <members>Scheduling_Time__c.Start_Time__c</members>
+        <members>Scheduling_Time__c.Time_Separation__c</members>
+        <members>Scheduling_Time__c.Type__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Appointment_Holder__c</members>
+        <members>Availability__c</members>
+        <members>Scheduling_Time__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Appointment_Holder_Record_Page</members>
+        <name>FlexiPage</name>
+    </types>
+    <types>
+        <members>Appointment_Location_Zones</members>
+        <members>Appointment_Types</members>
+        <name>GlobalValueSet</name>
+    </types>
+    <types>
+        <members>Appointment_Holder__c-Appointment Holder Layout</members>
+        <members>Availability__c-Availability Layout</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>Appointment_Holder__c.All</members>
+        <members>Availability__c.Active</members>
+        <members>Availability__c.All</members>
+        <members>Availability__c.By_Day</members>
+        <name>ListView</name>
+    </types>
+    <types>
+        <members>Litify_Scheduling_Component</members>
+        <name>PermissionSet</name>
+    </types>
+    <version>47.0</version>
+</Package>

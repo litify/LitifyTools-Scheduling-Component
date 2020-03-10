@@ -1,0 +1,141 @@
+<!--Scheduling app-->
+<aura:component controller="L_SchedulingTableController" implements="flexipage:availableForRecordHome,force:lightningQuickAction,force:appHostable,force:hasRecordId">
+    <!--Attributes-->
+
+
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="record" type="Object"/>
+    <aura:attribute name="intakeRecord" type="Object"/>
+    <aura:attribute name="recordError" type="String"/>
+    <aura:attribute name="appointmentTimeslots" type="Object[]" access="public"/>
+    <aura:attribute name="appointmentHolders" type="Object[]" access="public"/>
+    <aura:attribute name="eventsByAppointmentHolder" type="Object" access="public"/>
+    <aura:attribute name="renderSchedulingTable" type="Boolean" access="public" />
+
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="litify_pm__Client__r.Name,litify_pm__Client__r.Location_Full_Address__c"
+                      targetRecord="{!v.record}"
+                      targetFields="{!v.intakeRecord}"
+                      targetError="{!v.recordError}"
+                      recordUpdated="{!c.handleRecordUpdated}"
+    />
+
+    <aura:attribute name="areas" type="List" />
+
+    <aura:attribute name="selectedArea" type="String"/>
+    <aura:attribute name="selectedDate" type="Date"/>
+    <aura:attribute name="outputDate" type="String"/>
+    <aura:attribute name="initData" type="Object" access="public"/>
+    <aura:attribute name="selectedTab" type="String" access="public"/>
+    <aura:attribute name="selectedDuration" type="Decimal" access="public" default="0.5"/>
+    <aura:attribute name="durationLabel" type="String" access="public" default="0:30"/>
+    <aura:attribute name="availableUsers" type="Object[]" access="public"/>
+    <aura:attribute name="tableData" type="Object" access="public"/>
+    <aura:attribute name="appointmentTypes" type="List" access="public"/>
+    <aura:attribute name="selectedAppoType" type="String" access="public"/>
+
+
+
+    <aura:handler event="force:navigateToSObject" action="{!c.navigateToRecord}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <div class="slds-grid   slds-wrap slds-grid--pull-padded slds-grid_align-center">
+        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12 slds-p-right--medium" >
+            <lightning:select label="Area" value="{!v.selectedArea}" onchange="{!c.areaChanged}">
+                <aura:iteration items="{!v.initData.areas}" var="item">
+                    <option text="{!item.label}" value="{!item.value}" selected="{!item.selected}"/>
+                </aura:iteration>
+            </lightning:select>  
+
+
+        </div>
+        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12 ">
+
+            <lightning:select label="Appointment Type"  value="{!v.selectedAppoType}" onchange="{!c.typeChanged}">
+                <aura:iteration items="{!v.initData.types}" var="item">
+                    <option text="{!item.label}" value="{!item.value}" selected="{!item.selected}"/> <!-- mg 20180525 - added .selected to !item -->
+                </aura:iteration>
+            </lightning:select>
+
+
+        </div>
+    </div>
+
+    <div class="slds-grid slds-wrap slds-grid--pull-padded slds-grid_align-center slds-p-bottom--medium slds-p-top--medium">
+        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12 slds-p-right--medium" style="position:relative;top:1rem;">
+
+            <lightning:buttonGroup >
+                <lightning:buttonIcon iconName="utility:chevronleft" class="slds-button_icon-border slds-button_icon-border-filled button-style" variant="bare" alternativeText="Date Range" size="small" onclick="{!c.prevDay}"/>
+                <lightning:buttonIcon iconName="utility:chevronright" class="slds-button_icon-border slds-button_icon-border-filled marginButton" variant="bare" alternativeText="Date Range" size="small" onclick="{!c.nextDay}"/>
+
+                <ui:inputDate aura:id="dateField"  value="{!v.outputDate}" displayDatePicker="true" change="{!c.dateChanged}" />
+
+            </lightning:buttonGroup>
+        </div>
+        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12">
+
+
+
+            <div class="slds-form-element slds-p-bottom--small" style="position:relative;top:1rem;">
+                <label class="slds-form-element__label" for="slider-id-01">
+                    <span class="slds-slider-label">
+                      <!--<span class="slds-slider-label__label">Duration</span>-->
+                      <span class="slds-slider-label__range">30 min - 2 hours</span>
+                    </span>
+                </label>
+                <div class="slds-form-element__control">
+                    <div class="slds-slider slds-size_small">
+                        <input type="range" id="slider-id-01" step="0.5" min="0.5" max="2" style="width:10rem" class="slds-slider__range" value="{!v.selectedDuration}" onchange="{!c.handleRangeChange}" />
+                        <span class="slds-slider__value" aria-hidden="true">{!v.durationLabel}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="slds-tabs_default ">
+
+                <ul aura:id="tabs" class="slds-tabs_default__nav slds-container--center" role="tablist">
+                    <aura:iteration items="{!v.initData.tabLabels}" var="item">
+                        <li class="{! equals(item, v.selectedTab) ? 'slds-tabs_default__item slds-is-active' : 'slds-tabs_default__item' }" id="{!item}" role="presentation" onclick="{!c.activateTab}" ><a class="slds-vertical-tabs__link" href="javascript:void(0)"  role="tab" tabindex="0" aria-selected="true" aria-controls="slds-vertical-tabs-0" >{!item}</a></li>
+                    </aura:iteration>
+
+                </ul>
+
+
+
+        <div class="slds-vertical-tabs__content slds-show slds-p-bottom--medium slds-modal__content slds-p-around--medium slds-is-relative" style="padding: 0.3rem;" id="slds-vertical-tabs-0" role="tabpanel" aria-labelledby="slds-vertical-tabs-0__nav">
+            <div aura:id="spinner" style="height: 10rem;">
+                <lightning:spinner variant="brand" size="medium" alternativeText="Loading" />
+            </div>
+            
+            <aura:if isTrue="{! v.renderSchedulingTable }">
+                <c:SchedulingTable clientName="{!v.intakeRecord.litify_pm__Client__r.Name}"
+                                   clientAddress="{!v.intakeRecord.litify_pm__Client__r.Location_Full_Address__c}"
+                                   selectedAppoType="{!v.selectedAppoType}"
+                                   recordId="{!v.recordId}"
+                                   tableData="{!v.tableData}"
+                                   appointmentHolders="{!v.appointmentHolders}"
+                                   appointmentTimeslots="{!v.appointmentTimeslots}"
+                                   eventsByAppointmentHolder="{!v.eventsByAppointmentHolder}"
+                                   dayPart="{!v.tableData.dayPart}"
+                                   selectedArea="{!v.selectedArea}"
+                                   selectedDate="{!v.selectedDate}"
+                                   selectedDuration="{!v.selectedDuration}"/>
+            </aura:if>
+        </div>
+    </div>
+    
+    
+</aura:component>

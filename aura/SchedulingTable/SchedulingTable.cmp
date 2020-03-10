@@ -1,0 +1,189 @@
+<!--
+ - Created by andrewlokotosh on 3/25/18.
+ -->
+
+<aura:component description="SchedulingTable" controller="L_SchedulingTableController">
+    <aura:attribute name="appointmentHolders" type="Object[]" access="public"/>
+    <aura:attribute name="appointmentTimeslots" type="Object[]" access="public"/>
+    <aura:attribute name="eventsByAppointmentHolder" type="Object" access="public" />
+
+    <aura:attribute name="dayPart" type="String" access="public"/>
+    <aura:attribute name="tableData" type="Object" access="public"/>
+    <aura:attribute name="availableUsers" type="Object[]" access="public"/>
+    <aura:attribute name="selectedDuration" type="Decimal" access="public" default="0.5"/>
+    <aura:attribute name="selectedArea" type="String"/>
+    <aura:attribute name="selectedDate" type="Date"/>
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="clientName" type="String"/>
+    <aura:attribute name="clientAddress" type="String"/>
+    <aura:attribute name="selectedAppoType" type="String" access="public"/>
+
+
+    <aura:handler name="change" value="{!v.availableUsers}" action="{!c.handleChange}"/>
+
+    <div class="slds-scrollable_x">
+
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
+        <thead>
+        <tr class="">
+            <th scope="col" class="th-placeholder">
+                <div class="slds-truncate">
+                    <!-- Placeholder for maximum column width since we are using position:absolute to make the time column stick -->
+                    00:00AM
+                </div>
+            </th>
+
+            <aura:iteration items="{!v.appointmentHolders}" var="ah">
+                <th scope="col" style="padding: .2rem;">
+                    <div>
+                        <p><a href="javascript:void(0);">{! ah.Name }</a></p>
+                        <p><c:AppointmentHolderSummary appointmentHolderId="{!ah.Id}" eventsByAppointmentHolder="{!v.eventsByAppointmentHolder}"/></p>
+
+
+                    </div>
+                </th>
+            </aura:iteration>
+        </tr>
+        </thead>
+        <tbody>
+            <aura:iteration items="{!v.appointmentTimeslots}" var="timeslot">
+                <tr>
+                    <th scope="row" data-label="Timeslot" class="sticky">
+                        {!timeslot.TimeLabel}
+                    </th>
+                    <aura:iteration items="{! timeslot.Availabilities }" var="avail">
+                        <td scope="row" style="{! not( avail.IsWithinAvailabilityTime ) ? 'background-color:#000;' : and( not( avail.IsAvailable ), not( empty( avail.appointment ) ) ) ? 'background-color:#ff0000;' : and( not( avail.IsAvailable ), empty( avail.appointment ) ) ? 'background-color:#ffb2b2;' : 'cursor:pointer' }"
+                            onclick="{! and( avail.IsWithinAvailabilityTime, avail.IsAvailable ) ? c.createEvent : '' }" onmouseenter="{! or( not( avail.IsWithinAvailabilityTime ), avail.IsAvailable ) ? '' : c.showEventInfo }" onmouseleave="{! or( not( avail.IsWithinAvailabilityTime ), avail.IsAvailable )? '' : c.hideEventInfo }"
+                            data-appointmentholderid="{! avail.AppointmentHolder.Id }" data-userid="{! avail.AppointmentHolder.User__r.Id }" data-timeslot="{! timeslot.TimeTicks }"
+                            data-popover-id="{! not( empty( avail.appointment ) ) ? avail.appointment.Id : '' }">
+                            &nbsp;
+
+                            <aura:if isTrue="{! not( empty( avail.appointment ) ) }">
+                                <section id="{! avail.appointment.Id }" role="dialog" class="slds-hide slds-popover slds-nubbin_right" style="position: absolute; bottom: -2rem; left:-5.55rem; width: 10rem;"
+                                         onmouseenter="{! c.selectEventInfo }" onmouseleave="{! c.unselectedEventInfo }" onclick="{! c.goToEvent }"
+                                         aria-label="{! avail.appointment.Id }" aria-describedby="dialog-body-id-39">
+                                    <div class="slds-popover__body">
+                                        <p>
+                                            {! avail.appointment.Type }
+                                        </p>
+                                        
+                                        <p class="slds-truncate">
+                                            {! avail.appointment.Subject }
+                                        </p>
+                                        
+                                        <p>
+                                            <ui:outputDateTime value="{! avail.appointment.StartDateTime }" format="h:mm" /> -  <ui:outputDateTime value="{! avail.appointment.EndDateTime }" format="h:mm" />
+                                        </p>
+                                        
+                                        <p class="slds-truncate">
+                                            <a>
+                                                {! avail.appointment.Location }
+                                            </a>
+                                        </p>
+                                        
+                                        <p />
+                                    </div>
+                                </section>
+                            </aura:if>
+                        </td>
+                    </aura:iteration>
+                </tr>
+            </aura:iteration>
+            <aura:iteration items="{!v.tableData.rowWrappers}" var="item">
+                <tr>
+
+                    <th scope="row" data-label="Appointment Holder Summary">
+                        <div class="slds-truncate">
+                            <p><a href="javascript:void(0);">{!item.rowHolder.User__r.Name}</a></p>
+                                {!item.events}
+                            <p><c:AppointmentHolderSummary events="{!item.events}"/></p>
+
+
+                        </div>
+                    </th>
+                    <aura:iteration items="{!item.rowAvailabilities}" var="row">
+                        <th scope="col" style="    padding: .2rem;">
+                            <div class="slds-truncate">
+
+
+                                    <aura:iteration items="{!row.cellAvailability}" var="availability" indexVar="i">
+                                        <!--<li class="slds-show"> <a onclick=""></a></li>-->
+
+
+                                                <aura:if isTrue="{!availability.isAvailable}">
+
+
+                                                    <aura:if isTrue="{!availability.isDurationRisk}">
+                                                        <div class="slds-filters__item  slds-grid slds-grid_vertical-align-center" style="background:#fbcdd2;">
+                                                            <!-- mg commit above | changed style="background:#ffedede0;;" to style="background:#fbcdd2;" | added sls-theme_error &  slds-has-error -->
+                                                            <!-- mg update 20180708 | removed slds-has-error slds-theme_error -->
+                                                            <div id="{!item.rowHolder.User__c + '_' + item.rowHolder.Id}" name="{!availability.label}" class="slds-button_reset slds-grow slds-has-blur-focus" >
+                                                                <span class="slds-show">{!availability.label}</span>
+                                                            </div>
+                                                        </div>
+                                                        <section class="slds-hide slds-popover slds-nubbin_right" role="dialog">
+                                                            <div class="slds-popover__body" id="dialog-body-id-39">
+                                                            </div>
+                                                        </section>
+                                                        <aura:set attribute="else">
+                                                            <div name="{!availability.label}" value="{!availability.isAvailable}" class="slds-filters__item  slds-grid slds-grid_vertical-align-center" style="background:white;">
+                                                                <button id="{!item.rowHolder.User__c + '_' + item.rowHolder.Id}" name="{!availability.label}" class="slds-button_reset slds-grow slds-has-blur-focus"  onclick="{!c.handleRowAction}">
+                                                                    <span class="slds-show">{!availability.label}</span>
+                                                                </button>
+                                                            </div>
+                                                            <section class="slds-hide slds-popover slds-nubbin_right" role="dialog">
+                                                                <div class="slds-popover__body" id="dialog-body-id-39">
+                                                                </div>
+                                                            </section>
+                                                        </aura:set>
+
+                                                    </aura:if>
+                                                    <aura:set attribute="else">
+
+                                                        <div class="slds-filters__item slds-grid slds-grid_vertical-align-center slds-text-color_inverse"
+                                                             id="{!availability.e.Id + '_'+i}"
+                                                             style="background:#c23934;"
+                                                             title="{!availability.e.Id}"
+                                                             value="{!availability.isAvailable}"
+                                                             name="{!availability.label}"
+                                                             onmouseenter="{!c.showEventInfo}"
+                                                             onmouseleave="{!c.hideEventInfo}"> <!-- mg commit 20180708 | added slds-text-color_inverse | swapped background from line 69 (originally #fbcdd2) -->
+                                                            <div class="slds-button_reset slds-grow" >
+                                                                    {!availability.label}
+                                                            </div>
+                                                        </div>
+
+                                                        <section id="{!availability.e.Id}" class="slds-hide slds-popover slds-nubbin_right" role="dialog"  style="position: absolute; bottom: 0rem; left:-9.5rem; width: 10rem;" aria-label="{!availability.e.Id}" aria-describedby="dialog-body-id-39" onmouseenter="{!c.selectEventInfo}" onmouseleave="{!c.unselectedEventInfo}" onclick="{!c.goToEvent}">
+                                                            <div class="slds-popover__body">
+
+
+                                                                <p>{!availability.e.Type}</p>
+                                                                <p class="slds-truncate">{!availability.e.Subject}</p>
+                                                                <!-- mg commit 20180708 | slds-cell-wrap maxes out popover, reverted to truncate -->
+                                                                <p><ui:outputDateTime value="{!availability.e.StartDateTime}" format="h:mm"/> -  <ui:outputDateTime value="{!availability.e.EndDateTime}" format="h:mm"/></p>
+                                                                <p class="slds-truncate"><a>{!availability.e.Location}</a></p>
+                                                                <p></p>
+                                                            </div>
+                                                        </section>
+
+
+                                                    </aura:set>
+                                                </aura:if>
+
+
+
+
+
+                                    </aura:iteration>
+
+
+                            </div>
+                        </th>
+                    </aura:iteration>
+                </tr>
+            </aura:iteration>
+
+        </tbody>
+    </table>
+    </div>
+</aura:component>
