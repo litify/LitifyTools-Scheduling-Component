@@ -14,6 +14,8 @@
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
+        <members>Activity.Appointment_Holder__c</members>
+        <members>Activity.Status__c</members>
         <members>Appointment_Holder__c.Active__c</members>
         <members>Appointment_Holder__c.User__c</members>
         <members>Availability__c.Appointment_Holder__c</members>
