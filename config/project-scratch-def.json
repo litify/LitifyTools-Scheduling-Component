@@ -1,0 +1,18 @@
+{
+  "orgName": "Scheduling",
+  "edition": "Developer",
+  "settings": {
+    "lightningExperienceSettings": {
+        "enableS1DesktopEnabled": true
+    },
+    "chatterSettings": {
+        "enableChatter": true
+    },
+    "enhancedNotesSettings": {
+        "enableEnhancedNotes": true
+    },
+    "mobileSettings": {
+        "enableS1EncryptedStoragePref2": false
+    }
+  }
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>By_Day</fullName>
+    <columns>Appointment_Holder__c</columns>
+    <columns>Location_Zones__c</columns>
+    <columns>Days_of_the_Week__c</columns>
+    <columns>Start_Time__c</columns>
+    <columns>End_Time__c</columns>
+    <columns>Start_Date__c</columns>
+    <columns>End_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Start_Date__c</field>
+        <operation>lessOrEqual</operation>
+        <value>TODAY</value>
+    </filters>
+    <filters>
+        <field>End_Date__c</field>
+        <operation>greaterOrEqual</operation>
+        <value>TODAY</value>
+    </filters>
+    <label>By Day</label>
+</ListView>

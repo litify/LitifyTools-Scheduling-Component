@@ -156,36 +156,7 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
-    <fields>
-        <fullName>Active__c</fullName>
-        <defaultValue>true</defaultValue>
-        <externalId>false</externalId>
-        <label>Active</label>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>User__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>User</label>
-        <referenceTo>User</referenceTo>
-        <relationshipName>Appointment_Holders</relationshipName>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
     <label>Appointment Holder</label>
-    <listViews>
-        <fullName>All</fullName>
-        <columns>NAME</columns>
-        <columns>Active__c</columns>
-        <columns>User__c</columns>
-        <columns>UPDATEDBY_USER</columns>
-        <columns>LAST_UPDATE</columns>
-        <filterScope>Everything</filterScope>
-        <label>All</label>
-    </listViews>
     <nameField>
         <label>Appointment Holder Name</label>
         <type>Text</type>
