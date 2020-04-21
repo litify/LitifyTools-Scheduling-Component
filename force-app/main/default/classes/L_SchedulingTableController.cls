@@ -170,7 +170,7 @@ public with sharing class L_SchedulingTableController {
         if (dateTimeIteratorEnd < dateTimeIterator) {
             dateTimeIteratorEnd = dateTimeIteratorEnd.addDays(1);
         }
-        while (dateTimeIterator.day() == thisDate.day() && dateTimeIterator < dateTimeIteratorEnd) {
+        while (dateTimeIterator.dayGmt() == thisDate.day() && dateTimeIterator < dateTimeIteratorEnd) {
             System.debug('Duration in minutes: ' + durationInMinutes);
             System.debug('dateTimeIterator: ' + dateTimeIterator);
             Datetime appointmentEndDateTime = dateTimeIterator.addMinutes(durationInMinutes);
