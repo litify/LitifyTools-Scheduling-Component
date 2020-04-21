@@ -72,7 +72,7 @@
 
     onTimezoneChanged: function(cmp, evt, helper) {
         const timezone = cmp.get('v.selectedTimezone');
-        console.log('timezoneChanged', timezone);
+        helper.getAvailableUsers(cmp);
     },
 
     areaChanged : function(cmp,evt,helper){

@@ -142,7 +142,8 @@
                                    dayPart="{!v.tableData.dayPart}"
                                    selectedArea="{!v.selectedArea}"
                                    selectedDate="{!v.selectedDate}"
-                                   selectedDuration="{!v.selectedDuration}"/>
+                                   selectedDuration="{!v.selectedDuration}"
+                                   selectedTimezone="{!v.selectedTimezone}"/>
             </aura:if>
         </div>
     </div>

@@ -34,12 +34,14 @@
         var selectedDate = cmp.get('v.selectedDate');
         var selectedArea = cmp.get('v.selectedArea');
         var selectedTab = cmp.get('v.selectedTab');
+        var selectedTimezone = cmp.get('v.selectedTimezone');
         var duration = Math.floor(cmp.get('v.selectedDuration') * 60);
         var selectedAppoType = cmp.get('v.selectedAppoType'); //mg 20180419 - added var for appo type
 
         action.setParams({"selectedArea" : selectedArea,
                           "selectedDayPart" : selectedTab,
                           "selectedDate" : selectedDate,
+                          "selectedTimezone": selectedTimezone,
                           // "selectedAppoType" : selectedAppoType, //mg 20180419 - added var for appo type
 //                          "selectedAreaId" : cmp.get('v.selectedAreaId'), //mg 20180419 - not needed
                           "durationInMinutes" : duration});// setting the parameter to apex class method

@@ -11,6 +11,7 @@
     <aura:attribute name="tableData" type="Object" access="public"/>
     <aura:attribute name="availableUsers" type="Object[]" access="public"/>
     <aura:attribute name="selectedDuration" type="Decimal" access="public" default="0.5"/>
+    <aura:attribute name="selectedTimezone" type="String"/>
     <aura:attribute name="selectedArea" type="String"/>
     <aura:attribute name="selectedDate" type="Date"/>
     <aura:attribute name="recordId" type="Id" />
@@ -36,7 +37,7 @@
             <aura:iteration items="{!v.appointmentHolders}" var="ah">
                 <th scope="col" style="padding: .2rem;">
                     <div>
-                        <p><a href="javascript:void(0);">{! ah.Name }</a></p>
+                        <p><a href="javascript:void(0);">{! ah.Name } ({!ah.User__r.TimeZoneSidKey})</a></p>
                         <p><c:AppointmentHolderSummary appointmentHolderId="{!ah.Id}" eventsByAppointmentHolder="{!v.eventsByAppointmentHolder}"/></p>
 
 

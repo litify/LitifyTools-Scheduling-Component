@@ -104,7 +104,7 @@ public with sharing class L_SchedulingTableController {
 
 
     @AuraEnabled
-    public static AppointmentAvailabilityModel getAppointmentAvailability(String selectedDate, String selectedArea, String selectedDayPart, Integer durationInMinutes) {
+    public static AppointmentAvailabilityModel getAppointmentAvailability(String selectedDate, String selectedArea, String selectedDayPart, String selectedTimezone, Integer durationInMinutes) {
         durationInMinutes = Integer.valueOf(durationInMinutes); // this *SHOULDN'T* be necessary but it is! https://salesforce.stackexchange.com/questions/195371/illegal-argument-on-date-adddays-when-called-from-lightning
 
         Date thisDate = Date.valueOf(selectedDate);
@@ -176,6 +176,8 @@ public with sharing class L_SchedulingTableController {
             endHour += 12;
         }
 
+        // TODO: dateTimeIterator is really not used as a datetime but rather just a way of iterating over the
+        // minutes/hours. We should probably use an integer instead to parallel the way we store the Scheduling_Time__c
         Datetime dateTimeIterator = Datetime.newInstanceGMT(thisDate.year(), thisDate.month(), thisDate.day(), startHour, 0, 0);
         Datetime dateTimeIteratorEnd = Datetime.newInstanceGMT(thisDate.year(), thisDate.month(), thisDate.day(), endHour, 0, 0);
         if (dateTimeIteratorEnd < dateTimeIterator) {
@@ -622,7 +624,7 @@ public with sharing class L_SchedulingTableController {
         init.areas = getAreas();
         init.types = getTypes();
         init.timezones = getTimezones();
-        init.currentUserTimezoneSid = [Select TimeZoneSidKey FROM User WHERE Id = :UserInfo.getUserId()].TimezoneSidKey;
+        init.currentUserTimezoneSid = UserInfo.getTimeZone().getID();
         return init;
     }
 
