@@ -3,6 +3,7 @@
  -->
 
 <aura:component description="SchedulingTable" controller="L_SchedulingTableController">
+
     <aura:attribute name="appointmentHolders" type="Object[]" access="public"/>
     <aura:attribute name="appointmentTimeslots" type="Object[]" access="public"/>
     <aura:attribute name="eventsByAppointmentHolder" type="Object" access="public" />

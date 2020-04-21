@@ -104,7 +104,7 @@ public with sharing class L_SchedulingTableController {
 
 
     @AuraEnabled
-    public static AppointmentAvailabilityModel getAppointmentAvailability(String selectedDate, String selectedArea, String selectedDayPart, String selectedTimezone, Integer durationInMinutes) {
+    public static AppointmentAvailabilityModel getAppointmentAvailability(String selectedDate, String selectedArea, String selectedDayPart, Integer durationInMinutes) {
         durationInMinutes = Integer.valueOf(durationInMinutes); // this *SHOULDN'T* be necessary but it is! https://salesforce.stackexchange.com/questions/195371/illegal-argument-on-date-adddays-when-called-from-lightning
 
         Date thisDate = Date.valueOf(selectedDate);
@@ -117,7 +117,7 @@ public with sharing class L_SchedulingTableController {
         System.debug('schedulingTime: ' + schedulingTime);
 
         List<Appointment_Holder__c> allAppointmentHolders = [
-          SELECT Id, Name, Active__c, User__r.Name, User__r.TimezoneSidKey, User__c,
+          SELECT Id, Name, Active__c, User__r.Name, User__r.TimeZoneSidKey, User__c,
             (
                 SELECT Appointment_Holder__c, Start_Date__c, End_Date__c, Start_Time__c, End_Time__c, Days_of_the_Week__c
                 FROM Availabilities__r

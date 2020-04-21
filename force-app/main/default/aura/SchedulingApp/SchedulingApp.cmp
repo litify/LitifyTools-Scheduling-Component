@@ -1,5 +1,6 @@
 <!--Scheduling app-->
 <aura:component controller="L_SchedulingTableController" implements="flexipage:availableForRecordHome,force:lightningQuickAction,force:appHostable,force:hasRecordId">
+    <ltng:require scripts="{!join(',', $Resource.moment, $Resource.momenttimezonewithdata10yearrange)}"/>
     <!--Attributes-->
 
 

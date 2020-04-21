@@ -41,7 +41,6 @@
         action.setParams({"selectedArea" : selectedArea,
                           "selectedDayPart" : selectedTab,
                           "selectedDate" : selectedDate,
-                          "selectedTimezone": selectedTimezone,
                           // "selectedAppoType" : selectedAppoType, //mg 20180419 - added var for appo type
 //                          "selectedAreaId" : cmp.get('v.selectedAreaId'), //mg 20180419 - not needed
                           "durationInMinutes" : duration});// setting the parameter to apex class method
@@ -78,7 +77,7 @@
                         event.timeslotLabels = eventTimeslotLabels;
                     });
                 }
-                
+
                 // Determine AppointmetHolder availability for each timeslot by examining their Availability record(s) as well as their Event record(s). - JC
                 timeslots.forEach(function(timeslot) {
                     timeslot.Availabilities.forEach(function(availability) {
@@ -102,6 +101,18 @@
                             relevantAvailabilities.forEach(function(relevantAvailability) {
                                 var appointmentHolderAvailabilityStartTimeticks = new Date(timeslot.TimeTicks).setUTCHours(0, 0, 0, relevantAvailability.Start_Time__c);
                                 var appointmentHolderAvailabilityEndTimeticks = new Date(timeslot.TimeTicks).setUTCHours(0, 0, 0, relevantAvailability.End_Time__c);
+
+                                /**
+                                 * Since all time is actually displayed in GMT (see TODO in L_SchedulingTableController).
+                                 * We want the user to see is the difference between the timezone they think they're looking at
+                                 * and the timezone of the AvailabilityHolder. So we can just *pretend* they're looking at
+                                 * the timezone they chose.
+                                 */
+                                var viewerOffset = moment.tz.zone(selectedTimezone).utcOffset(appointmentHolderAvailabilityStartTimeticks);
+                                var holderOffset = moment.tz.zone(availability.AppointmentHolder.User__r.TimeZoneSidKey).utcOffset(appointmentHolderAvailabilityStartTimeticks)
+                                var diffTicks = ((viewerOffset - holderOffset) * 60 * 1000);
+                                appointmentHolderAvailabilityStartTimeticks = appointmentHolderAvailabilityStartTimeticks - diffTicks;
+                                appointmentHolderAvailabilityEndTimeticks = appointmentHolderAvailabilityEndTimeticks - diffTicks;
                                 availability.IsWithinAvailabilityTime = (timeslot.TimeTicks >= appointmentHolderAvailabilityStartTimeticks && timeslot.TimeTicks < appointmentHolderAvailabilityEndTimeticks);
                             });
                         } else {
