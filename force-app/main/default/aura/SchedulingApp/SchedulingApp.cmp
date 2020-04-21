@@ -25,6 +25,7 @@
 
     <aura:attribute name="selectedArea" type="String"/>
     <aura:attribute name="selectedDate" type="Date"/>
+    <aura:attribute name="selectedTimezone" type="String"/>
     <aura:attribute name="outputDate" type="String"/>
     <aura:attribute name="initData" type="Object" access="public"/>
     <aura:attribute name="selectedTab" type="String" access="public"/>
@@ -63,7 +64,7 @@
     </div>
 
     <div class="slds-grid slds-wrap slds-grid--pull-padded slds-grid_align-center slds-p-bottom--medium slds-p-top--medium">
-        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12 slds-p-right--medium" style="position:relative;top:1rem;">
+        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size_4-of-12 slds-large-size_4-of-12 slds-p-right--medium" style="position:relative;top:1rem;">
 
             <lightning:buttonGroup >
                 <lightning:buttonIcon iconName="utility:chevronleft" class="slds-button_icon-border slds-button_icon-border-filled button-style" variant="bare" alternativeText="Date Range" size="small" onclick="{!c.prevDay}"/>
@@ -73,11 +74,11 @@
 
             </lightning:buttonGroup>
         </div>
-        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12">
+        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size_4-of-12 slds-large-size_4-of-12">
 
 
 
-            <div class="slds-form-element slds-p-bottom--small" style="position:relative;top:1rem;">
+            <div class="slds-form-element slds-p-bottom--small">
                 <label class="slds-form-element__label" for="slider-id-01">
                     <span class="slds-slider-label">
                       <!--<span class="slds-slider-label__label">Duration</span>-->
@@ -91,6 +92,15 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="slds-col--padded slds-size--1-of-1 slds-medium-size_4-of-12 slds-large-size_4-of-12">
+            
+                <lightning:select label="Timezone" value="{!v.selectedTimezone}" onchange="{!c.onTimezoneChanged}">
+                    <aura:iteration items="{!v.initData.timezones}" var="item">
+                        <option text="{!item.label}" value="{!item.value}" selected="{! item.value == v.selectedTimezone }"/>
+                    </aura:iteration>
+                </lightning:select>
+            
         </div>
     </div>
 

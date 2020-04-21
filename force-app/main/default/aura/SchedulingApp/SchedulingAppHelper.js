@@ -7,11 +7,12 @@
           action.setCallback(this, $A.getCallback(function (response) {
               var state = response.getState();
               if (state === "SUCCESS" && cmp.isValid()) {
-                  cmp.set('v.initData', response.getReturnValue());
-                  cmp.set('v.selectedTab', response.getReturnValue().tabLabels[0]);
-                  cmp.set('v.selectedArea', response.getReturnValue().areas[0].label); //mg 20180419 - added semicolon
-                  cmp.set('v.selectedAppoType', response.getReturnValue().types[0].label); //mg 20180419 - added semicolon
-
+                  const returnValue = response.getReturnValue();
+                  cmp.set('v.initData',returnValue);
+                  cmp.set('v.selectedTab',returnValue.tabLabels[0]);
+                  cmp.set('v.selectedArea',returnValue.areas[0].label); //mg 20180419 - added semicolon
+                  cmp.set('v.selectedAppoType',returnValue.types[0].label); //mg 20180419 - added semicolon
+                cmp.set('v.selectedTimezone', returnValue.currentUserTimezoneSid);
 
                     this.getAvailableUsers(cmp);
               } else if (state === "ERROR") {

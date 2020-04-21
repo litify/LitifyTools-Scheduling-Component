@@ -70,6 +70,11 @@
        helper.getAvailableUsers(cmp);
     },
 
+    onTimezoneChanged: function(cmp, evt, helper) {
+        const timezone = cmp.get('v.selectedTimezone');
+        console.log('timezoneChanged', timezone);
+    },
+
     areaChanged : function(cmp,evt,helper){
         helper.getAvailableUsers(cmp);
     },

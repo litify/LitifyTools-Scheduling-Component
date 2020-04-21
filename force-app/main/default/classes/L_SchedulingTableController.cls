@@ -35,6 +35,17 @@ public with sharing class L_SchedulingTableController {
         return areas;
 
     }
+    private static PicklistWrapper[] getTimezones() {
+        List<PicklistWrapper> timezones = new List<PicklistWrapper>();
+
+        List<PicklistEntry> entries = Schema.SObjectType.User.fields.TimeZoneSidKey.picklistValues;
+
+        for(PicklistEntry p : entries){
+            timezones.add(new PicklistWrapper(p.getLabel(), p.getValue()));
+        }
+
+        return timezones;
+    }
     @TestVisible
     private static PicklistWrapper[] getTypes(){
         List<PicklistWrapper> appointmentTypes = new List<PicklistWrapper>();
@@ -106,7 +117,7 @@ public with sharing class L_SchedulingTableController {
         System.debug('schedulingTime: ' + schedulingTime);
 
         List<Appointment_Holder__c> allAppointmentHolders = [
-          SELECT Id, Name, Active__c, User__r.Name, User__c,
+          SELECT Id, Name, Active__c, User__r.Name, User__r.TimezoneSidKey, User__c,
             (
                 SELECT Appointment_Holder__c, Start_Date__c, End_Date__c, Start_Time__c, End_Time__c, Days_of_the_Week__c
                 FROM Availabilities__r
@@ -610,6 +621,8 @@ public with sharing class L_SchedulingTableController {
         init.tabLabels  = dayS;
         init.areas = getAreas();
         init.types = getTypes();
+        init.timezones = getTimezones();
+        init.currentUserTimezoneSid = [Select TimeZoneSidKey FROM User WHERE Id = :UserInfo.getUserId()].TimezoneSidKey;
         return init;
     }
 
@@ -716,7 +729,8 @@ public with sharing class L_SchedulingTableController {
         @AuraEnabled public List<String> tabLabels {get;set;}
         @AuraEnabled public List<PicklistWrapper> areas {get;set;}
         @AuraEnabled public List<PicklistWrapper> types {get;set;}
-
+        @AuraEnabled public List<PicklistWrapper> timezones { get; set; }
+        @AuraEnabled public String currentUserTimezoneSid { get; set; }
     }
 
     public class PicklistWrapper {
